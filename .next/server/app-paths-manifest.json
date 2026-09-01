@@ -1,0 +1,9 @@
+{
+  "/assignments/page": "app/assignments/page.js",
+  "/classes/page": "app/classes/page.js",
+  "/dashboard/teacher/page": "app/dashboard/teacher/page.js",
+  "/exam/marks/page": "app/exam/marks/page.js",
+  "/login/page": "app/login/page.js",
+  "/notifications/page": "app/notifications/page.js",
+  "/transport/page": "app/transport/page.js"
+}
