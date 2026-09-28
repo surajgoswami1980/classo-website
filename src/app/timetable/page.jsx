@@ -9,6 +9,7 @@ import {
   ClockIcon,
   MapPinIcon,
   UserIcon,
+  CalendarDaysIcon,
 } from '@heroicons/react/24/outline';
 import { hydrateAuth } from '../../store/slices/authSlice';
 import api from '../../services/api';
@@ -17,55 +18,6 @@ import BottomNav from '../../components/BottomNav';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const DAY_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-// Mock data for fallback
-const MOCK_TIMETABLE = {
-  Monday: [
-    { subject: 'Mathematics', teacher: 'Mr. Sharma', start_time: '08:00', end_time: '08:45', room: 'Room 101' },
-    { subject: 'English', teacher: 'Ms. Gupta', start_time: '08:50', end_time: '09:35', room: 'Room 102' },
-    { subject: 'Science', teacher: 'Mr. Verma', start_time: '09:40', end_time: '10:25', room: 'Lab 1' },
-    { subject: 'Break', teacher: '', start_time: '10:25', end_time: '10:45', room: '' },
-    { subject: 'Hindi', teacher: 'Mrs. Singh', start_time: '10:45', end_time: '11:30', room: 'Room 101' },
-    { subject: 'Social Studies', teacher: 'Mr. Patel', start_time: '11:35', end_time: '12:20', room: 'Room 103' },
-  ],
-  Tuesday: [
-    { subject: 'Science', teacher: 'Mr. Verma', start_time: '08:00', end_time: '08:45', room: 'Lab 1' },
-    { subject: 'Mathematics', teacher: 'Mr. Sharma', start_time: '08:50', end_time: '09:35', room: 'Room 101' },
-    { subject: 'English', teacher: 'Ms. Gupta', start_time: '09:40', end_time: '10:25', room: 'Room 102' },
-    { subject: 'Break', teacher: '', start_time: '10:25', end_time: '10:45', room: '' },
-    { subject: 'Computer', teacher: 'Mr. Joshi', start_time: '10:45', end_time: '11:30', room: 'Computer Lab' },
-    { subject: 'Physical Education', teacher: 'Mr. Kumar', start_time: '11:35', end_time: '12:20', room: 'Ground' },
-  ],
-  Wednesday: [
-    { subject: 'Hindi', teacher: 'Mrs. Singh', start_time: '08:00', end_time: '08:45', room: 'Room 101' },
-    { subject: 'Mathematics', teacher: 'Mr. Sharma', start_time: '08:50', end_time: '09:35', room: 'Room 101' },
-    { subject: 'Science', teacher: 'Mr. Verma', start_time: '09:40', end_time: '10:25', room: 'Lab 1' },
-    { subject: 'Break', teacher: '', start_time: '10:25', end_time: '10:45', room: '' },
-    { subject: 'English', teacher: 'Ms. Gupta', start_time: '10:45', end_time: '11:30', room: 'Room 102' },
-    { subject: 'Art', teacher: 'Ms. Mehta', start_time: '11:35', end_time: '12:20', room: 'Art Room' },
-  ],
-  Thursday: [
-    { subject: 'English', teacher: 'Ms. Gupta', start_time: '08:00', end_time: '08:45', room: 'Room 102' },
-    { subject: 'Science', teacher: 'Mr. Verma', start_time: '08:50', end_time: '09:35', room: 'Lab 1' },
-    { subject: 'Mathematics', teacher: 'Mr. Sharma', start_time: '09:40', end_time: '10:25', room: 'Room 101' },
-    { subject: 'Break', teacher: '', start_time: '10:25', end_time: '10:45', room: '' },
-    { subject: 'Social Studies', teacher: 'Mr. Patel', start_time: '10:45', end_time: '11:30', room: 'Room 103' },
-    { subject: 'Hindi', teacher: 'Mrs. Singh', start_time: '11:35', end_time: '12:20', room: 'Room 101' },
-  ],
-  Friday: [
-    { subject: 'Mathematics', teacher: 'Mr. Sharma', start_time: '08:00', end_time: '08:45', room: 'Room 101' },
-    { subject: 'Computer', teacher: 'Mr. Joshi', start_time: '08:50', end_time: '09:35', room: 'Computer Lab' },
-    { subject: 'English', teacher: 'Ms. Gupta', start_time: '09:40', end_time: '10:25', room: 'Room 102' },
-    { subject: 'Break', teacher: '', start_time: '10:25', end_time: '10:45', room: '' },
-    { subject: 'Science', teacher: 'Mr. Verma', start_time: '10:45', end_time: '11:30', room: 'Lab 1' },
-    { subject: 'Music', teacher: 'Mrs. Kapoor', start_time: '11:35', end_time: '12:20', room: 'Music Room' },
-  ],
-  Saturday: [
-    { subject: 'Physical Education', teacher: 'Mr. Kumar', start_time: '08:00', end_time: '08:45', room: 'Ground' },
-    { subject: 'Mathematics', teacher: 'Mr. Sharma', start_time: '08:50', end_time: '09:35', room: 'Room 101' },
-    { subject: 'Science', teacher: 'Mr. Verma', start_time: '09:40', end_time: '10:25', room: 'Lab 1' },
-  ],
-};
 
 export default function TimetablePage() {
   const dispatch = useDispatch();
@@ -107,8 +59,8 @@ export default function TimetablePage() {
     retry: 1,
   });
 
-  // Use API data or fallback to mock
-  const weeklyData = timetableData || MOCK_TIMETABLE;
+  // Live API data only — grouped by day (empty object until loaded)
+  const weeklyData = timetableData || {};
   const selectedDayName = DAY_FULL[selectedDay];
   const periods = weeklyData[selectedDayName] || weeklyData[DAYS[selectedDay]] || [];
 
@@ -255,10 +207,10 @@ export default function TimetablePage() {
           </div>
         )}
 
-        {/* Error fallback note */}
+        {/* Error state */}
         {error && !isLoading && (
-          <p className="text-center text-xs text-gray-400 mt-4">
-            Showing sample timetable. Connect to the internet for live data.
+          <p className="text-center text-xs text-red-400 mt-4">
+            Couldn't load your timetable. Please try again later.
           </p>
         )}
       </main>

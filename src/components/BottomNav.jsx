@@ -6,6 +6,7 @@ import {
   HomeIcon,
   CalendarDaysIcon,
   AcademicCapIcon,
+  BookOpenIcon,
   BellIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
@@ -13,6 +14,7 @@ import {
   HomeIcon as HomeIconSolid,
   CalendarDaysIcon as CalendarDaysIconSolid,
   AcademicCapIcon as AcademicCapIconSolid,
+  BookOpenIcon as BookOpenIconSolid,
   BellIcon as BellIconSolid,
   UserCircleIcon as UserCircleIconSolid,
 } from '@heroicons/react/24/solid';
@@ -20,7 +22,8 @@ import {
 const navItems = [
   { href: '/dashboard/student', label: 'Home', icon: HomeIcon, activeIcon: HomeIconSolid },
   { href: '/timetable', label: 'Timetable', icon: CalendarDaysIcon, activeIcon: CalendarDaysIconSolid },
-  { href: '/attendance/my', label: 'Results', icon: AcademicCapIcon, activeIcon: AcademicCapIconSolid },
+  { href: '/attendance/my', label: 'Attendance', icon: AcademicCapIcon, activeIcon: AcademicCapIconSolid },
+  { href: '/library', label: 'Library', icon: BookOpenIcon, activeIcon: BookOpenIconSolid },
   { href: '/notifications', label: 'Alerts', icon: BellIcon, activeIcon: BellIconSolid },
   { href: '/profile', label: 'Profile', icon: UserCircleIcon, activeIcon: UserCircleIconSolid },
 ];

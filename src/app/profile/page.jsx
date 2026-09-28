@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -26,7 +26,7 @@ import api from '../../services/api';
 import StudentHeader from '../../components/StudentHeader';
 import BottomNav from '../../components/BottomNav';
 
-export default function ProfilePage() {
+function ProfileContent() {
   const dispatch = useDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -433,6 +433,15 @@ export default function ProfilePage() {
 
       <BottomNav />
     </div>
+  );
+}
+
+// useSearchParams() requires a Suspense boundary during static prerendering.
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={null}>
+      <ProfileContent />
+    </Suspense>
   );
 }
 

@@ -118,6 +118,24 @@ export default function TransportPage() {
                     </div>
                   </div>
                 </div>
+                {(data.conductor_name || data.conductor_phone) && (
+                  <div className="border-t pt-4 grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2">
+                      <UserIcon className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <p className="text-xs text-gray-500">Conductor</p>
+                        <p className="text-sm font-medium text-gray-900">{data.conductor_name || 'Not assigned'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <PhoneIcon className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <p className="text-xs text-gray-500">Contact</p>
+                        <p className="text-sm font-medium text-gray-900">{data.conductor_phone || '—'}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {data.vehicle_number && (
                   <div className="border-t pt-4 flex items-center gap-2">
                     <TruckIcon className="w-4 h-4 text-gray-400" />
