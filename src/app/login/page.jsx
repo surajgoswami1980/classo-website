@@ -8,6 +8,7 @@ import api from '../../services/api';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { BuildingLibraryIcon, UserIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, DevicePhoneMobileIcon, EnvelopeIcon, KeyIcon } from '@heroicons/react/24/outline';
+import QuiloLogo from '../../components/QuiloLogo';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -172,11 +173,12 @@ export default function LoginPage() {
           {step === 1 && (
             <>
               <div className="text-center mb-6">
-                <div className="h-12 w-12 mx-auto mb-3 bg-blue-100 rounded-full flex items-center justify-center">
-                  <BuildingLibraryIcon className="h-6 w-6 text-blue-600" />
+                <div className="mx-auto mb-3 flex justify-center">
+                  <QuiloLogo size={56} />
                 </div>
-                <h1 className="text-2xl font-bold text-gray-900">School ERP</h1>
-                <p className="text-gray-500 mt-1">Enter your school code to continue</p>
+                <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Quilo</h1>
+                <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400 mt-1">Multi-Tenant SaaS ERP</p>
+                <p className="text-gray-500 mt-2">Enter your school code to continue</p>
               </div>
 
               <form onSubmit={handleSchoolLookup} className="space-y-4">

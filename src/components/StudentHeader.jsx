@@ -19,7 +19,7 @@ export default function StudentHeader({ title, showBack = false, unreadCount = 0
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const schoolName = school?.name || school?.school_name || 'School ERP';
+  const schoolName = school?.name || school?.school_name || 'Quilo';
   const schoolLogo = school?.logo || null;
   const studentName = user?.name || user?.full_name || 'Student';
   const studentClass = user?.class_name || user?.class || '';

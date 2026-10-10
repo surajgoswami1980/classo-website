@@ -23,6 +23,7 @@ import { hydrateAuth } from '../../../store/slices/authSlice';
 import api from '../../../services/api';
 import StudentHeader from '../../../components/StudentHeader';
 import BottomNav from '../../../components/BottomNav';
+import BannerSlider from '../../../components/BannerSlider';
 
 export default function StudentDashboard() {
   const dispatch = useDispatch();
@@ -91,7 +92,10 @@ export default function StudentDashboard() {
     <div className="min-h-screen bg-gray-50 pb-20 md:pb-6">
       <StudentHeader unreadCount={unreadCount} />
 
-      <main className="max-w-4xl mx-auto px-4 py-4 space-y-5">
+      <main className="max-w-5xl mx-auto px-4 py-4 space-y-5">
+        {/* Banner carousel + popup */}
+        <BannerSlider />
+
         {/* Welcome Card */}
         <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-2xl p-5 text-white shadow-lg shadow-blue-200">
           <div className="flex items-center justify-between">
@@ -234,7 +238,7 @@ export default function StudentDashboard() {
             {/* Quick Access Grid */}
             <section>
               <h3 className="text-sm font-semibold text-gray-900 mb-3 px-1">Quick Access</h3>
-              <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
+              <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-3">
                 {quickLinks.map((link) => (
                   <Link
                     key={link.href}

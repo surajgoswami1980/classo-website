@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/src/middleware.js"],"sourcesContent":["import { NextResponse } from 'next/server';\r\n\r\nconst publicRoutes = ['/login', '/forgot-password', '/reset-password', '/api'];\r\n\r\nexport function middleware(request) {\r\n  const { pathname } = request.nextUrl;\r\n\r\n  // Allow public routes\r\n  if (publicRoutes.some((route) => pathname.startsWith(route))) {\r\n    return NextResponse.next();\r\n  }\r\n\r\n  // Check for auth token in cookies or header\r\n  // Note: actual auth check happens client-side via Redux hydration\r\n  // This middleware is for SSR protection only\r\n  return NextResponse.next();\r\n}\r\n\r\nexport const config = {\r\n  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],\r\n};\r\n"],"names":[],"mappings":";;;;;;AAAA;AAAA;;AAEA,MAAM,eAAe;IAAC;IAAU;IAAoB;IAAmB;CAAO;AAEvE,SAAS,WAAW,OAAO;IAChC,MAAM,EAAE,QAAQ,EAAE,GAAG,QAAQ,OAAO;IAEpC,sBAAsB;IACtB,IAAI,aAAa,IAAI,CAAC,CAAC,QAAU,SAAS,UAAU,CAAC,SAAS;QAC5D,OAAO,gMAAY,CAAC,IAAI;IAC1B;IAEA,4CAA4C;IAC5C,kEAAkE;IAClE,6CAA6C;IAC7C,OAAO,gMAAY,CAAC,IAAI;AAC1B;AAEO,MAAM,SAAS;IACpB,SAAS;QAAC;KAAgD;AAC5D"}}]
-}

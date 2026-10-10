@@ -1,1 +1,167 @@
-{"version":3,"caseSensitive":false,"basePath":"","rewrites":{"beforeFiles":[],"afterFiles":[],"fallback":[]},"redirects":[{"source":"/:path+/","destination":"/:path+","permanent":true,"internal":true,"regex":"^(?:\\/((?:[^\\/]+?)(?:\\/(?:[^\\/]+?))*))\\/$"}],"headers":[]}
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/assignments",
+      "regex": "^/assignments(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/assignments(?:/)?$"
+    },
+    {
+      "page": "/attendance/mark",
+      "regex": "^/attendance/mark(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/attendance/mark(?:/)?$"
+    },
+    {
+      "page": "/attendance/my",
+      "regex": "^/attendance/my(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/attendance/my(?:/)?$"
+    },
+    {
+      "page": "/classes",
+      "regex": "^/classes(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/classes(?:/)?$"
+    },
+    {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/dashboard/student",
+      "regex": "^/dashboard/student(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/student(?:/)?$"
+    },
+    {
+      "page": "/dashboard/teacher",
+      "regex": "^/dashboard/teacher(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/teacher(?:/)?$"
+    },
+    {
+      "page": "/events",
+      "regex": "^/events(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/events(?:/)?$"
+    },
+    {
+      "page": "/exam/marks",
+      "regex": "^/exam/marks(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/exam/marks(?:/)?$"
+    },
+    {
+      "page": "/exam/results",
+      "regex": "^/exam/results(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/exam/results(?:/)?$"
+    },
+    {
+      "page": "/fees",
+      "regex": "^/fees(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/fees(?:/)?$"
+    },
+    {
+      "page": "/forgot-password",
+      "regex": "^/forgot\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/forgot\\-password(?:/)?$"
+    },
+    {
+      "page": "/library",
+      "regex": "^/library(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/library(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/notifications",
+      "regex": "^/notifications(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/notifications(?:/)?$"
+    },
+    {
+      "page": "/profile",
+      "regex": "^/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/profile(?:/)?$"
+    },
+    {
+      "page": "/reset-password",
+      "regex": "^/reset\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/reset\\-password(?:/)?$"
+    },
+    {
+      "page": "/timetable",
+      "regex": "^/timetable(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/timetable(?:/)?$"
+    },
+    {
+      "page": "/transport",
+      "regex": "^/transport(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/transport(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

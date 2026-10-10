@@ -2,8 +2,8 @@ import './globals.css';
 import { Providers } from '../providers/Providers';
 
 export const metadata = {
-  title: 'School ERP Portal',
-  description: 'Student & Teacher Portal - School ERP SaaS',
+  title: 'Quilo Portal',
+  description: 'Student & Teacher Portal - Quilo Multi-Tenant SaaS ERP',
 };
 
 export default function RootLayout({ children }) {
