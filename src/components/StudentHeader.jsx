@@ -135,6 +135,7 @@ export default function StudentHeader({ title, showBack = false, unreadCount = 0
                 { href: '/events', label: 'Events' },
                 { href: '/library', label: 'Library' },
                 { href: '/transport', label: 'Transport' },
+                { href: '/store', label: 'Store' },
                 { href: '/fees', label: 'Fees' },
                 { href: '/notifications', label: 'Notifications' },
                 { href: '/profile', label: 'View Profile' },

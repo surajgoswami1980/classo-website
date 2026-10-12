@@ -18,6 +18,7 @@ import {
   ClockIcon,
   BellAlertIcon,
   TruckIcon,
+  ShoppingBagIcon,
 } from '@heroicons/react/24/outline';
 import { hydrateAuth } from '../../../store/slices/authSlice';
 import api from '../../../services/api';
@@ -81,6 +82,7 @@ export default function StudentDashboard() {
     { href: '/fees', label: 'Fees', icon: CurrencyDollarIcon, color: 'bg-amber-50 text-amber-600' },
     { href: '/library', label: 'Library', icon: BookOpenIcon, color: 'bg-teal-50 text-teal-600' },
     { href: '/transport', label: 'Transport', icon: TruckIcon, color: 'bg-cyan-50 text-cyan-600' },
+    { href: '/store', label: 'Store', icon: ShoppingBagIcon, color: 'bg-rose-50 text-rose-600' },
     { href: '/profile', label: 'Profile', icon: UserCircleIcon, color: 'bg-pink-50 text-pink-600' },
   ];
 
@@ -93,9 +95,6 @@ export default function StudentDashboard() {
       <StudentHeader unreadCount={unreadCount} />
 
       <main className="max-w-5xl mx-auto px-4 py-4 space-y-5">
-        {/* Banner carousel + popup */}
-        <BannerSlider />
-
         {/* Welcome Card */}
         <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-2xl p-5 text-white shadow-lg shadow-blue-200">
           <div className="flex items-center justify-between">
@@ -234,6 +233,9 @@ export default function StudentDashboard() {
                 )}
               </div>
             </section>
+
+            {/* Banner carousel + popup — shown after intro & attendance */}
+            <BannerSlider />
 
             {/* Quick Access Grid */}
             <section>
