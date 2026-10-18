@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { store } from '../store/store';
+import { hydrateAuth } from '../store/slices/authSlice';
 import { Toaster } from 'react-hot-toast';
 
 const queryClient = new QueryClient({
@@ -14,11 +16,22 @@ const queryClient = new QueryClient({
   },
 });
 
+// Restore auth (user/role/token) from localStorage once, at the root, so every
+// page already has `user.role` available and routing never races on an
+// undefined role.
+function AuthBoot({ children }) {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(hydrateAuth());
+  }, [dispatch]);
+  return children;
+}
+
 export function Providers({ children }) {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <AuthBoot>{children}</AuthBoot>
         <Toaster position="top-right" />
       </QueryClientProvider>
     </Provider>

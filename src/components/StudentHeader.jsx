@@ -19,7 +19,7 @@ export default function StudentHeader({ title, showBack = false, unreadCount = 0
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const schoolName = school?.name || school?.school_name || 'Quilo';
+  const schoolName = school?.name || school?.school_name || 'MyClasses';
   const schoolLogo = school?.logo || null;
   const studentName = user?.name || user?.full_name || 'Student';
   const studentClass = user?.class_name || user?.class || '';
@@ -34,21 +34,21 @@ export default function StudentHeader({ title, showBack = false, unreadCount = 0
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-100 shadow-sm">
+      <header className="sticky top-0 z-40 glass-nav">
         <div className="flex items-center justify-between px-4 py-3">
           {/* Left section */}
           <div className="flex items-center gap-3">
             {showBack ? (
               <button
                 onClick={() => router.back()}
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                className="p-1.5 rounded-lg hover:bg-white/60 transition-colors"
               >
                 <ArrowLeftIcon className="w-5 h-5 text-gray-700" />
               </button>
             ) : (
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors md:hidden"
+                className="p-1.5 rounded-lg hover:bg-white/60 transition-colors md:hidden"
               >
                 <Bars3Icon className="w-5 h-5 text-gray-700" />
               </button>
@@ -128,7 +128,7 @@ export default function StudentHeader({ title, showBack = false, unreadCount = 0
             </div>
             <nav className="p-4 space-y-1">
               {[
-                { href: '/dashboard/student', label: 'Dashboard' },
+                { href: ['teacher', 'incharge'].includes(user?.role) ? '/dashboard/teacher' : '/dashboard/student', label: 'Dashboard' },
                 { href: '/timetable', label: 'Timetable' },
                 { href: '/attendance/my', label: 'Attendance' },
                 { href: '/assignments', label: 'Assignments' },
@@ -137,6 +137,7 @@ export default function StudentHeader({ title, showBack = false, unreadCount = 0
                 { href: '/transport', label: 'Transport' },
                 { href: '/store', label: 'Store' },
                 { href: '/fees', label: 'Fees' },
+                { href: '/invoices', label: 'My Invoices' },
                 { href: '/notifications', label: 'Notifications' },
                 { href: '/profile', label: 'View Profile' },
                 { href: '/profile?edit=true', label: 'Edit Profile' },

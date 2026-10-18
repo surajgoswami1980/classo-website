@@ -58,7 +58,7 @@ export default function LibraryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 md:pb-6">
+    <div className="min-h-screen aurora-bg pb-20 md:pb-6">
       <StudentHeader title="Library" showBack />
 
       <main className="max-w-4xl mx-auto px-4 py-4 space-y-5">

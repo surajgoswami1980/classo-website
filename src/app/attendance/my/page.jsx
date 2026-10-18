@@ -30,7 +30,8 @@ import BottomNav from '../../../components/BottomNav';
 export default function MyAttendancePage() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const isTeacher = ['teacher', 'incharge'].includes(user?.role);
 
   useEffect(() => {
     dispatch(hydrateAuth());
@@ -49,9 +50,13 @@ export default function MyAttendancePage() {
   const year = format(currentMonth, 'yyyy');
 
   const { data: attendanceData, isLoading, error, refetch } = useQuery({
-    queryKey: ['attendance-monthly', month, year],
+    queryKey: ['attendance-monthly', month, year, isTeacher],
     queryFn: async () => {
-      const res = await api.get(`/attendance/student/monthly?month=${month}&year=${year}`);
+      // Teachers/incharges read their own staff attendance; students read theirs.
+      const url = isTeacher
+        ? `/attendance/staff/my-monthly?month=${month}&year=${year}`
+        : `/attendance/student/monthly?month=${month}&year=${year}`;
+      const res = await api.get(url);
       return res.data?.data || res.data;
     },
     enabled: isAuthenticated,

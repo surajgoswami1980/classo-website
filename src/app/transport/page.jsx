@@ -33,7 +33,7 @@ export default function TransportPage() {
   if (!isAuthenticated) return null;
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${isTeacher ? '' : 'pb-20 md:pb-6'}`}>
+    <div className={`min-h-screen aurora-bg ${isTeacher ? '' : 'pb-20 md:pb-6'}`}>
       {isTeacher ? (
         <header className="bg-white shadow-sm border-b sticky top-0 z-10">
           <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">

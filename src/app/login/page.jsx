@@ -176,8 +176,8 @@ export default function LoginPage() {
                 <div className="mx-auto mb-3 flex justify-center">
                   <QuiloLogo size={56} />
                 </div>
-                <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Quilo</h1>
-                <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400 mt-1">Multi-Tenant SaaS ERP</p>
+                <h1 className="text-2xl font-black tracking-tight"><span className="text-primary-600">My</span><span className="text-gray-900">Classes</span></h1>
+                <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400 mt-1">Education Management Platform</p>
                 <p className="text-gray-500 mt-2">Enter your school code to continue</p>
               </div>
 

@@ -11,13 +11,15 @@ export default function DashboardRedirect() {
   useEffect(() => {
     if (!isAuthenticated) { router.replace('/login'); return; }
 
+    // Wait until the user (and its role) is actually hydrated. Deciding while
+    // role is still undefined is what caused teachers to bounce onto the
+    // student dashboard right after navigating.
     const role = user?.role;
-    if (role === 'student' || role === 'parent') {
-      router.replace('/dashboard/student');
-    } else if (role === 'teacher' || role === 'incharge') {
+    if (!role) return;
+
+    if (role === 'teacher' || role === 'incharge') {
       router.replace('/dashboard/teacher');
     } else {
-      // school-admin, sub-admin — show student dashboard as fallback
       router.replace('/dashboard/student');
     }
   }, [isAuthenticated, user]);

@@ -42,8 +42,31 @@ export default function AssignmentsPage() {
   const [sections, setSections] = useState([]);
   const [formData, setFormData] = useState({
     class_id: '', section_id: '', subject_id: '',
-    title: '', description: '', due_date: '', max_marks: 100,
+    title: '', topic: '', description: '', due_date: '', max_marks: 100,
   });
+
+  // Student submit modal state
+  const [submitFor, setSubmitFor] = useState(null);
+  const [submitText, setSubmitText] = useState('');
+  const [submitUrl, setSubmitUrl] = useState('');
+  // Teacher grade modal state
+  const [gradeFor, setGradeFor] = useState(null);
+
+  const submitMutation = useMutation({
+    mutationFn: async ({ id, body }) => (await api.post(`/assignment/${id}/submit`, body)).data,
+    onSuccess: () => {
+      toast.success('Submitted!');
+      queryClient.invalidateQueries({ queryKey: ['assignments'] });
+      setSubmitFor(null); setSubmitText(''); setSubmitUrl('');
+    },
+    onError: (err) => toast.error(err.response?.data?.message || 'Failed to submit'),
+  });
+
+  const doSubmit = () => {
+    if (!submitText.trim() && !submitUrl.trim()) { toast.error('Add a description or file link'); return; }
+    const type = /\.pdf($|\?)/i.test(submitUrl) ? 'pdf' : (/\.(png|jpe?g|webp)($|\?)/i.test(submitUrl) ? 'image' : (submitUrl ? 'doc' : null));
+    submitMutation.mutate({ id: submitFor.id, body: { description: submitText, attachment_url: submitUrl || null, attachment_type: type } });
+  };
 
   // Fetch classes for teacher
   useEffect(() => {
@@ -115,7 +138,7 @@ export default function AssignmentsPage() {
   if (!isAuthenticated) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 md:pb-6">
+    <div className="min-h-screen aurora-bg pb-20 md:pb-6">
       <StudentHeader title="Assignments" showBack />
 
       <main className="max-w-4xl mx-auto px-4 py-4 space-y-4">
@@ -181,6 +204,16 @@ export default function AssignmentsPage() {
                 />
               </div>
               <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Topic</label>
+                <input
+                  type="text"
+                  value={formData.topic}
+                  onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="e.g. Chapter 5 — Fractions"
+                />
+              </div>
+              <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
                 <textarea
                   value={formData.description}
@@ -239,6 +272,14 @@ export default function AssignmentsPage() {
           <div className="space-y-3">
             {assignments.map((a) => {
               const isPastDue = new Date(a.due_date) < new Date();
+              const sub = a.submission;
+              const st = a.effective_status || sub?.status || (isPastDue ? 'missed' : 'pending');
+              const stBadge = {
+                pending: isPastDue ? ['Missed', 'bg-red-100 text-red-600'] : ['To do', 'bg-orange-100 text-orange-600'],
+                submitted: ['Submitted', 'bg-blue-100 text-blue-600'],
+                graded: ['Graded', 'bg-emerald-100 text-emerald-600'],
+                missed: ['Missed', 'bg-red-100 text-red-600'],
+              }[st] || [st, 'bg-gray-100 text-gray-500'];
               return (
                 <div
                   key={a.id}
@@ -247,6 +288,7 @@ export default function AssignmentsPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-semibold text-gray-900 truncate">{a.title}</h4>
+                      {a.topic && <p className="text-xs text-blue-600 mt-0.5">{a.topic}</p>}
                       {a.description && (
                         <p className="text-xs text-gray-500 mt-1 line-clamp-2">{a.description}</p>
                       )}
@@ -262,20 +304,52 @@ export default function AssignmentsPage() {
                           </span>
                         )}
                       </div>
+
+                      {/* Student: marks + submit */}
+                      {isStudent && (
+                        <div className="mt-3">
+                          {st === 'graded' && sub ? (
+                            <div className="inline-flex flex-col gap-0.5 bg-emerald-50 rounded-lg px-3 py-2">
+                              <span className="text-sm font-bold text-emerald-700">Marks: {sub.marks} / {a.max_marks}</span>
+                              {sub.feedback && <span className="text-xs text-gray-500 italic">“{sub.feedback}”</span>}
+                            </div>
+                          ) : st === 'submitted' ? (
+                            <span className="text-xs font-semibold text-blue-600">Submitted{sub?.is_late ? ' (late)' : ''} — awaiting marks</span>
+                          ) : !isPastDue ? (
+                            <button
+                              onClick={() => { setSubmitFor(a); setSubmitText(sub?.description || ''); setSubmitUrl(sub?.attachment_url || ''); }}
+                              className="px-4 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition"
+                            >
+                              Submit
+                            </button>
+                          ) : (
+                            <span className="text-xs font-semibold text-red-500">Not submitted — marked 0</span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Teacher: progress */}
+                      {isTeacher && (
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 font-semibold">{a.submitted_count || 0} submitted</span>
+                          <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-semibold">{a.graded_count || 0} graded</span>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 ml-3">
-                      {isPastDue ? (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-500">Past Due</span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-orange-100 text-orange-600">Active</span>
-                      )}
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${stBadge[1]}`}>{isTeacher ? (isPastDue ? 'Closed' : 'Active') : stBadge[0]}</span>
                       {isTeacher && (
-                        <button
-                          onClick={() => { if (confirm('Delete this assignment?')) deleteMutation.mutate(a.id); }}
-                          className="p-1.5 rounded-lg hover:bg-red-50 transition"
-                        >
-                          <TrashIcon className="w-4 h-4 text-red-400" />
-                        </button>
+                        <>
+                          <button onClick={() => setGradeFor(a)} className="p-1.5 rounded-lg hover:bg-blue-50 transition" title="Grade">
+                            <AcademicCapIcon className="w-4 h-4 text-blue-500" />
+                          </button>
+                          <button
+                            onClick={() => { if (confirm('Delete this assignment?')) deleteMutation.mutate(a.id); }}
+                            className="p-1.5 rounded-lg hover:bg-red-50 transition"
+                          >
+                            <TrashIcon className="w-4 h-4 text-red-400" />
+                          </button>
+                        </>
                       )}
                     </div>
                   </div>
@@ -294,7 +368,94 @@ export default function AssignmentsPage() {
         )}
       </main>
 
+      {/* Student submit modal */}
+      {submitFor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 p-4" onClick={(e) => { if (e.target === e.currentTarget) setSubmitFor(null); }}>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+            <h3 className="text-base font-semibold text-gray-900 mb-1">Submit: {submitFor.title}</h3>
+            <p className="text-xs text-gray-400 mb-4">Type your answer and optionally paste an image/PDF link.</p>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Your answer / notes</label>
+            <textarea value={submitText} onChange={(e) => setSubmitText(e.target.value)} rows={4} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none mb-3" />
+            <label className="block text-xs font-medium text-gray-600 mb-1">File link (image / PDF URL — optional)</label>
+            <input type="text" value={submitUrl} onChange={(e) => setSubmitUrl(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none mb-4" placeholder="https://…" />
+            <div className="flex justify-end gap-2">
+              <button onClick={() => setSubmitFor(null)} className="px-4 py-2 border border-gray-200 rounded-lg text-sm">Cancel</button>
+              <button onClick={doSubmit} disabled={submitMutation.isPending} className="px-5 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold disabled:opacity-60">{submitMutation.isPending ? 'Submitting…' : 'Submit'}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Teacher grade modal */}
+      {gradeFor && (
+        <GradeModal assignment={gradeFor} onClose={() => { setGradeFor(null); queryClient.invalidateQueries({ queryKey: ['assignments'] }); }} />
+      )}
+
       <BottomNav />
+    </div>
+  );
+}
+
+function GradeModal({ assignment, onClose }) {
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useQuery({
+    queryKey: ['submissions', assignment.id],
+    queryFn: async () => (await api.get(`/assignment/${assignment.id}/submissions`)).data?.data,
+  });
+  const [marks, setMarks] = useState({});
+  const [feedback, setFeedback] = useState({});
+  const gradeMutation = useMutation({
+    mutationFn: async ({ student_id, m, f }) => (await api.post(`/assignment/${assignment.id}/grade`, { student_id, marks: Number(m), feedback: f || '' })).data,
+    onSuccess: () => { toast.success('Marks saved'); queryClient.invalidateQueries({ queryKey: ['submissions', assignment.id] }); },
+    onError: (e) => toast.error(e.response?.data?.message || 'Failed'),
+  });
+  const rows = data?.submissions || [];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 p-4" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[85vh] overflow-y-auto p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-base font-semibold text-gray-900">Grade: {assignment.title}</h3>
+          <button onClick={onClose}><XMarkIcon className="w-5 h-5 text-gray-400" /></button>
+        </div>
+        {isLoading ? (
+          <p className="text-center py-8 text-gray-400">Loading…</p>
+        ) : (
+          <div className="divide-y divide-gray-100">
+            {rows.map((r) => (
+              <div key={r.student_id} className="flex items-center gap-3 py-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900">{r.student_name}</p>
+                  <p className="text-xs text-gray-400">{r.status}{r.is_late ? ' · late' : ''}{r.attachment_url ? ' · has file' : ''}</p>
+                  {r.description && <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{r.description}</p>}
+                  {r.attachment_url && (
+                    <a href={r.attachment_url.startsWith('http') ? r.attachment_url : '#'} target="_blank" rel="noreferrer" className="text-xs text-blue-600 font-semibold">View file</a>
+                  )}
+                </div>
+                <input
+                  type="number" min={0} max={assignment.max_marks} placeholder="0"
+                  defaultValue={r.marks ?? ''}
+                  onChange={(e) => setMarks({ ...marks, [r.student_id]: e.target.value })}
+                  className="w-16 text-center border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+                <input
+                  type="text" placeholder="Feedback"
+                  defaultValue={r.feedback ?? ''}
+                  onChange={(e) => setFeedback({ ...feedback, [r.student_id]: e.target.value })}
+                  className="w-32 border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+                <button
+                  onClick={() => gradeMutation.mutate({ student_id: r.student_id, m: marks[r.student_id] ?? r.marks ?? 0, f: feedback[r.student_id] ?? r.feedback })}
+                  className="px-3 py-1.5 bg-emerald-600 text-white text-xs font-semibold rounded-lg hover:bg-emerald-700 transition"
+                >
+                  Save
+                </button>
+              </div>
+            ))}
+            {rows.length === 0 && <p className="text-center py-8 text-gray-400">No students found.</p>}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

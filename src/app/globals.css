@@ -1,4 +1,29 @@
 @import "tailwindcss";
+@config "../../tailwind.config.js";
+
+/* Tailwind v4 theme tokens — guarantees primary/cyan/accent resolve for
+   gradient utilities and bg-clip-text (otherwise clipped text can render
+   invisible/white when a color token is missing). */
+@theme {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  --color-cyan-300: #67e8f9;
+  --color-cyan-400: #22d3ee;
+  --color-cyan-500: #06b6d4;
+
+  --color-accent-500: #a855f7;
+  --color-accent-600: #9333ea;
+  --color-accent-700: #7e22ce;
+}
 
 :root {
   --primary: #2563EB;
@@ -34,6 +59,67 @@
   animation: fade-in-up 0.3s ease-out;
 }
 
+/* ─── Marketing landing animations ─────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(3deg); }
+}
+@keyframes gradient-pan {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes blob {
+  0%, 100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+  33% { border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; }
+  66% { border-radius: 35% 65% 55% 45% / 55% 35% 65% 45%; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-float-slow { animation: float-slow 9s ease-in-out infinite; }
+.animate-blob { animation: blob 12s ease-in-out infinite; }
+.animate-marquee { animation: marquee 28s linear infinite; }
+
+.gradient-pan {
+  background-size: 200% 200%;
+  animation: gradient-pan 8s ease infinite;
+}
+
+/* Reveal-on-scroll — toggled by IntersectionObserver (.in-view) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s cubic-bezier(.2,.6,.2,1), transform .7s cubic-bezier(.2,.6,.2,1);
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: .08s; }
+.reveal-delay-2 { transition-delay: .16s; }
+.reveal-delay-3 { transition-delay: .24s; }
+.reveal-delay-4 { transition-delay: .32s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float, .animate-float-slow, .animate-blob, .animate-marquee, .gradient-pan { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* Hide scrollbar but allow scroll */
 .scrollbar-hide {
   -ms-overflow-style: none;
@@ -56,4 +142,52 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* ─── Neumorphism (web portal) ─────────────────────────────────── */
+.neu-card {
+  background: #eef1f6;
+  box-shadow: 8px 8px 18px #c9ccd1, -8px -8px 18px #ffffff;
+}
+.neu-btn {
+  background: #eef1f6;
+  box-shadow: 5px 5px 12px #c9ccd1, -5px -5px 12px #ffffff;
+  transition: box-shadow .2s ease, transform .1s ease;
+}
+.neu-btn:hover { transform: translateY(-1px); }
+.neu-btn:active { box-shadow: inset 4px 4px 8px #c9ccd1, inset -4px -4px 8px #ffffff; }
+.neu-pressed {
+  background: #eef1f6;
+  box-shadow: inset 4px 4px 9px #c9ccd1, inset -4px -4px 9px #ffffff;
+}
+
+/* ─── Glassmorphism utilities (teacher / portal surfaces) ─────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px -12px rgba(37, 99, 235, 0.18);
+}
+.glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 10px 30px -14px rgba(37, 99, 235, 0.22);
+}
+.glass-nav {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+/* Soft aurora backdrop for portal pages behind glass surfaces. */
+.aurora-bg {
+  position: relative;
+  background:
+    radial-gradient(60rem 60rem at 10% -10%, rgba(59, 130, 246, 0.22), transparent 55%),
+    radial-gradient(50rem 50rem at 110% 10%, rgba(168, 85, 247, 0.18), transparent 55%),
+    radial-gradient(40rem 40rem at 50% 120%, rgba(34, 211, 238, 0.16), transparent 55%),
+    #f5f7fb;
 }

@@ -45,6 +45,21 @@ export default function FeesPage() {
 
       const orderData = res.data.data;
 
+      // ─── Cashfree path ───
+      if (orderData.provider === 'cashfree') {
+        await loadCashfreeScript();
+        const cashfree = window.Cashfree({ mode: orderData.cashfree_env === 'PROD' ? 'production' : 'sandbox' });
+        const result = await cashfree.checkout({ paymentSessionId: orderData.payment_session_id, redirectTarget: '_modal' });
+        if (result?.error) { toast.error('Payment cancelled'); setPaying(null); return; }
+        try {
+          await api.post('/fee/payment/verify', { cashfree_order_id: orderData.order_id });
+          toast.success('Payment successful! Invoice marked as paid.');
+          fetchInvoices();
+        } catch { toast.error('Payment verification failed. Contact school admin.'); }
+        setPaying(null);
+        return;
+      }
+
       // 2. Open Razorpay checkout
       const options = {
         key: orderData.razorpay_key,
@@ -125,9 +140,9 @@ export default function FeesPage() {
   const totalPaid = invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + Number(i.total_amount), 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen aurora-bg">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b sticky top-0 z-10">
+      <header className="glass-nav sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <button onClick={() => router.back()} className="p-1.5 hover:bg-gray-100 rounded-lg">
             <ArrowLeftIcon className="h-5 w-5 text-gray-600" />
@@ -203,6 +218,17 @@ function loadRazorpayScript() {
     const script = document.createElement('script');
     script.id = 'razorpay-script';
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = resolve;
+    document.body.appendChild(script);
+  });
+}
+
+function loadCashfreeScript() {
+  return new Promise((resolve) => {
+    if (window.Cashfree) { resolve(); return; }
+    const script = document.createElement('script');
+    script.id = 'cashfree-script';
+    script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
     script.onload = resolve;
     document.body.appendChild(script);
   });
