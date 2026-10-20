@@ -15,20 +15,9 @@ import {
 } from '@heroicons/react/24/outline';
 import { hydrateAuth } from '../../store/slices/authSlice';
 import api from '../../services/api';
+import { openCheckout } from '../../services/checkout';
 import StudentHeader from '../../components/StudentHeader';
 import BottomNav from '../../components/BottomNav';
-
-function loadRazorpayScript() {
-  return new Promise((resolve) => {
-    if (typeof window !== 'undefined' && window.Razorpay) { resolve(); return; }
-    if (document.getElementById('razorpay-script')) { resolve(); return; }
-    const script = document.createElement('script');
-    script.id = 'razorpay-script';
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.onload = resolve;
-    document.body.appendChild(script);
-  });
-}
 
 const CATEGORY_COLORS = {
   sports: 'bg-orange-100 text-orange-700',
@@ -83,34 +72,24 @@ export default function EventsPage() {
   };
 
   const payForEvent = async (event, orderData) => {
-    await loadRazorpayScript();
-    const options = {
-      key: orderData.razorpay_key,
-      amount: Math.round(orderData.amount * 100),
-      currency: orderData.currency || 'INR',
-      name: school?.name || 'Event Registration',
-      description: `Event: ${event.title}`,
-      order_id: orderData.order_id,
-      prefill: orderData.prefill || {},
-      theme: { color: '#2563EB' },
-      handler: async (response) => {
-        try {
-          await api.post('/event/payment/verify', {
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-          });
-          toast.success('Payment successful! You are registered.');
-          queryClient.invalidateQueries({ queryKey: ['events'] });
-        } catch {
-          toast.error('Payment verification failed. Contact the school office.');
-        }
-      },
-      modal: { ondismiss: () => { setRegistering(null); toast('Payment cancelled'); } },
-    };
-    const rzp = new window.Razorpay(options);
-    rzp.on('payment.failed', (resp) => toast.error(`Payment failed: ${resp.error.description}`));
-    rzp.open();
+    let payload;
+    try {
+      payload = await openCheckout(orderData, {
+        name: school?.name || 'Event Registration',
+        description: `Event: ${event.title}`,
+      });
+    } catch (e) {
+      toast.error(e.message);
+      return;
+    }
+    if (!payload) { toast('Payment cancelled'); return; }
+    try {
+      await api.post('/event/payment/verify', payload);
+      toast.success('Payment successful! You are registered.');
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+    } catch {
+      toast.error('Payment verification failed. Contact the school office.');
+    }
   };
 
   if (!isAuthenticated) return null;

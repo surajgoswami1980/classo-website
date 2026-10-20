@@ -8,20 +8,10 @@ import toast from 'react-hot-toast';
 import { ShoppingBagIcon, CheckCircleIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { hydrateAuth } from '../../store/slices/authSlice';
 import api from '../../services/api';
+import { openCheckout } from '../../services/checkout';
 import StudentHeader from '../../components/StudentHeader';
 import BottomNav from '../../components/BottomNav';
 
-function loadRazorpay() {
-  return new Promise((resolve) => {
-    if (typeof window !== 'undefined' && window.Razorpay) return resolve();
-    if (document.getElementById('rzp-sdk')) return resolve();
-    const s = document.createElement('script');
-    s.id = 'rzp-sdk';
-    s.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    s.onload = resolve;
-    document.body.appendChild(s);
-  });
-}
 
 export default function StorePage() {
   const dispatch = useDispatch();
@@ -56,33 +46,21 @@ export default function StorePage() {
         name: user?.name || '', email: user?.email || '', phone: user?.phone || '',
       });
       const order = res.data.data;
-      await loadRazorpay();
-      const rzp = new window.Razorpay({
-        key: order.razorpay_key,
-        amount: Math.round(order.amount * 100),
-        currency: order.currency,
-        name: school?.name || 'School Store',
-        description: order.item.name,
-        order_id: order.order_id,
-        prefill: order.prefill,
-        theme: { color: '#2563EB' },
-        handler: async (resp) => {
-          try {
-            await api.post('/store/purchase/verify', {
-              razorpay_order_id: resp.razorpay_order_id,
-              razorpay_payment_id: resp.razorpay_payment_id,
-              razorpay_signature: resp.razorpay_signature,
-            });
-            toast.success('Purchased! Collect it from the school counter.');
-            qc.invalidateQueries({ queryKey: ['store-orders'] });
-            qc.invalidateQueries({ queryKey: ['store-items'] });
-            setTab('orders');
-          } catch { toast.error('Verification failed. Contact school office.'); }
-        },
-        modal: { ondismiss: () => { setBuying(null); toast('Payment cancelled'); } },
-      });
-      rzp.on('payment.failed', (r) => toast.error(`Payment failed: ${r.error.description}`));
-      rzp.open();
+      let payload;
+      try {
+        payload = await openCheckout(order, { name: school?.name || 'School Store', description: order.item.name });
+      } catch (e) {
+        toast.error(e.message);
+        return;
+      }
+      if (!payload) { toast('Payment cancelled'); return; }
+      try {
+        await api.post('/store/purchase/verify', payload);
+        toast.success('Purchased! Collect it from the school counter.');
+        qc.invalidateQueries({ queryKey: ['store-orders'] });
+        qc.invalidateQueries({ queryKey: ['store-items'] });
+        setTab('orders');
+      } catch { toast.error('Verification failed. Contact school office.'); }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Could not start purchase');
     } finally { setBuying(null); }
