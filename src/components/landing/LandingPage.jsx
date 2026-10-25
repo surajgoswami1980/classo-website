@@ -66,11 +66,11 @@ const TESTIMONIALS = [
 ];
 
 const PLANS = [
-  { name: 'Starter', blurb: 'Perfect for small schools', monthly: 2999, yearly: 28790, limit: 'Up to 500 students', cta: 'Get Started', popular: false,
-    features: ['All core modules', 'Email & chat support', 'Web + mobile apps'] },
-  { name: 'Professional', blurb: 'Best for growing schools', monthly: 5999, yearly: 57590, limit: 'Up to 2,000 students', cta: 'Get Started', popular: true,
+  { name: 'Starter', blurb: 'Perfect for small schools', price: 4999, gst: true, limit: 'Up to 500 students', cta: 'Get Started', popular: false,
+    features: ['All core modules', 'Web + mobile apps', 'Email & chat support'] },
+  { name: 'Professional', blurb: 'Best for growing schools', price: 7499, gst: true, limit: 'Up to 1,000 students', cta: 'Get Started', popular: true,
     features: ['All modules + advanced features', 'Priority support', 'Reports & analytics'] },
-  { name: 'Enterprise', blurb: 'For large & multi-branch', monthly: null, yearly: null, limit: 'Unlimited students', cta: 'Contact Sales', popular: false,
+  { name: 'Enterprise', blurb: 'For large & multi-branch', price: null, gst: false, limit: 'More than 1,000 students', cta: 'Contact Us', popular: false,
     features: ['Multi-branch support', 'Dedicated account manager', 'Onboarding & training'] },
 ];
 
@@ -78,7 +78,6 @@ const PREVIEW_TABS = ['Admin Panel', 'School Admin', 'Student/Parent App', 'Teac
 
 export default function LandingPage() {
   useReveal();
-  const [billing, setBilling] = useState('monthly'); // monthly | yearly
   const [tab, setTab] = useState(0);
 
   const money = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
@@ -122,18 +121,20 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Product mockup: dashboard card + floating phone */}
-          <div className="relative">
-            <DashboardMock />
-            <div className="absolute -bottom-6 -left-2 hidden w-52 sm:block">
-              <PhoneMock />
+          {/* Product visual — real hero image if present, else CSS mockup */}
+          <SlotOrMock src="/landing/hero.png" alt="MyClasses dashboard and mobile app">
+            <div className="relative">
+              <DashboardMock />
+              <div className="absolute -bottom-6 -left-2 hidden w-52 sm:block">
+                <PhoneMock />
+              </div>
+              <div className="absolute -right-3 top-6 hidden rounded-2xl bg-white px-4 py-3 shadow-xl ring-1 ring-gray-100 md:block">
+                <p className="text-[11px] font-medium text-gray-400">Fees This Month</p>
+                <p className="mt-0.5 text-lg font-extrabold text-[#0F2A52]">₹12,48,000</p>
+                <p className="text-[11px] font-semibold text-emerald-600">▲ 18%</p>
+              </div>
             </div>
-            <div className="absolute -right-3 top-6 hidden rounded-2xl bg-white px-4 py-3 shadow-xl ring-1 ring-gray-100 md:block">
-              <p className="text-[11px] font-medium text-gray-400">Fees This Month</p>
-              <p className="mt-0.5 text-lg font-extrabold text-[#0F2A52]">₹12,48,000</p>
-              <p className="text-[11px] font-semibold text-emerald-600">▲ 18%</p>
-            </div>
-          </div>
+          </SlotOrMock>
         </div>
       </section>
 
@@ -255,10 +256,12 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <div className="mt-10 flex items-center justify-center gap-6">
-            <div className="hidden w-full max-w-2xl lg:block"><DashboardMock dark={tab === 0} /></div>
-            <div className="w-44 shrink-0"><PhoneMock /></div>
-          </div>
+          <SlotOrMock src="/landing/preview.png" alt="MyClasses platform preview" className="mt-10">
+            <div className="flex items-center justify-center gap-6">
+              <div className="hidden w-full max-w-2xl lg:block"><DashboardMock dark={tab === 0} /></div>
+              <div className="w-44 shrink-0"><PhoneMock /></div>
+            </div>
+          </SlotOrMock>
         </div>
       </section>
 
@@ -291,10 +294,6 @@ export default function LandingPage() {
             <span className="text-sm font-bold uppercase tracking-wider text-primary-600">Pricing</span>
             <h2 className="mt-2 text-3xl font-extrabold text-[#0F2A52] sm:text-4xl">Simple &amp; Transparent Pricing</h2>
             <p className="mt-3 text-gray-600">Choose a plan that fits your school&apos;s needs. No hidden charges.</p>
-            <div className="mt-6 inline-flex items-center gap-1 rounded-full bg-white p-1 shadow-sm">
-              <button onClick={() => setBilling('monthly')} className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${billing === 'monthly' ? 'bg-primary-600 text-white' : 'text-gray-600'}`}>Monthly</button>
-              <button onClick={() => setBilling('yearly')} className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${billing === 'yearly' ? 'bg-primary-600 text-white' : 'text-gray-600'}`}>Yearly <span className="text-emerald-500">Save 20%</span></button>
-            </div>
           </div>
 
           <div className="mt-12 grid items-stretch gap-6 md:grid-cols-3">
@@ -303,12 +302,12 @@ export default function LandingPage() {
                 {p.popular && <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary-600 px-3 py-1 text-xs font-bold text-white shadow-lg">Most Popular</span>}
                 <h3 className="text-lg font-bold text-[#0F2A52]">{p.name}</h3>
                 <p className="mt-0.5 text-sm text-gray-500">{p.blurb}</p>
-                <div className="mt-4 flex items-end gap-1">
-                  {p.monthly === null
+                <div className="mt-4 flex items-end gap-1.5">
+                  {p.price === null
                     ? <span className="text-3xl font-extrabold text-primary-700">Contact Us</span>
-                    : <><span className="text-4xl font-extrabold text-[#0F2A52]">{money(billing === 'monthly' ? p.monthly : Math.round(p.yearly / 12))}</span><span className="mb-1 text-gray-400">/mo</span></>}
+                    : <><span className="text-4xl font-extrabold text-[#0F2A52]">{money(p.price)}</span>{p.gst && <span className="mb-1 text-sm font-medium text-gray-400">+ GST</span>}</>}
                 </div>
-                <p className="mt-1 text-xs text-gray-500">{p.limit}{p.monthly !== null && billing === 'yearly' ? ` · billed ${money(p.yearly)}/yr` : ''}</p>
+                <p className="mt-1 text-xs text-gray-500">{p.limit}</p>
                 <div className="my-5 h-px bg-gray-100" />
                 <ul className="flex-1 space-y-3">
                   {p.features.map((f) => (
@@ -349,6 +348,19 @@ export default function LandingPage() {
       </section>
 
       <MarketingFooter />
+    </div>
+  );
+}
+
+/* Shows a real image from /public if the file exists, else the CSS mockup.
+   Drop files in school-erp-web/public/landing/ (hero.png, preview.png) to use
+   your own artwork — a missing file silently falls back and never breaks. */
+function SlotOrMock({ src, alt, className = '', children }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <div className={className}>{children}</div>;
+  return (
+    <div className={className}>
+      <img src={src} alt={alt} onError={() => setFailed(true)} className="h-auto w-full rounded-2xl" loading="lazy" />
     </div>
   );
 }
