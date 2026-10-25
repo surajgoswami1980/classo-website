@@ -91,15 +91,15 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="min-h-screen aurora-bg pb-20 md:pb-6">
+    <div className="min-h-screen bg-[#F4F8FE] pb-20 md:pb-6">
       <StudentHeader unreadCount={unreadCount} />
 
       <main className="max-w-5xl mx-auto px-4 py-4 space-y-5">
         {/* Welcome Card */}
-        <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-2xl p-5 text-white shadow-lg shadow-blue-200">
+        <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-[#082B5B] rounded-2xl p-5 text-white shadow-lg shadow-blue-200/60">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-blue-100 text-sm">Welcome back ðŸ‘‹</p>
+              <p className="text-blue-100 text-sm">Welcome back 👋</p>
               <h2 className="text-xl font-bold mt-1">{studentName}</h2>
               <div className="flex items-center gap-3 mt-2">
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
@@ -119,6 +119,15 @@ export default function StudentDashboard() {
               <span className="text-2xl font-bold">{studentName.charAt(0).toUpperCase()}</span>
             </div>
           </div>
+        </div>
+
+        {/* Promo strip */}
+        <div className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-4 text-white shadow-lg shadow-blue-200/60">
+          <div className="flex-1">
+            <p className="text-[15px] font-bold">Keep Learning, Keep Growing</p>
+            <p className="text-sm text-white/80">Check your timetable and new assignments.</p>
+          </div>
+          <AcademicCapIcon className="h-9 w-9 text-white/90" />
         </div>
 
         {/* Loading State */}
@@ -150,7 +159,7 @@ export default function StudentDashboard() {
         {!isLoading && (
           <>
             {/* Today's Timetable */}
-            <section className="glass-card rounded-2xl overflow-hidden">
+            <section className="bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
               <div className="flex items-center justify-between px-5 pt-4 pb-2">
                 <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                   <ClockIcon className="w-4 h-4 text-blue-600" />
@@ -176,7 +185,7 @@ export default function StudentDashboard() {
                             {period.subject_name || period.subject}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {period.teacher_name || period.teacher} â€¢ {period.room || 'Room N/A'}
+                            {period.teacher_name || period.teacher} · {period.room || 'Room N/A'}
                           </p>
                         </div>
                         <span className="text-xs text-gray-400 whitespace-nowrap">
@@ -187,14 +196,14 @@ export default function StudentDashboard() {
                   </div>
                 ) : (
                   <p className="text-sm text-gray-400 text-center py-4">
-                    No classes scheduled today ðŸŽ‰
+                    No classes scheduled today
                   </p>
                 )}
               </div>
             </section>
 
             {/* Attendance Summary */}
-            <section className="glass-card rounded-2xl p-5">
+            <section className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                   <ClipboardDocumentCheckIcon className="w-4 h-4 text-green-600" />
@@ -229,12 +238,12 @@ export default function StudentDashboard() {
                   />
                 </div>
                 {(attendance.present || 0) < 75 && (
-                  <p className="text-xs text-red-500 mt-1">âš ï¸ Attendance below 75% â€” Needs improvement</p>
+                  <p className="text-xs text-red-500 mt-1">Attendance below 75% - needs improvement</p>
                 )}
               </div>
             </section>
 
-            {/* Banner carousel + popup â€” shown after intro & attendance */}
+            {/* Banner carousel + popup */}
             <BannerSlider />
 
             {/* Quick Access Grid */}
@@ -245,7 +254,7 @@ export default function StudentDashboard() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="glass-card flex flex-col items-center gap-1.5 p-3 rounded-2xl hover:-translate-y-1 hover:shadow-xl transition-all duration-200"
+                    className="bg-white border border-gray-100 shadow-sm flex flex-col items-center gap-1.5 p-3 rounded-2xl hover:-translate-y-1 hover:shadow-md hover:border-primary-100 transition-all duration-200"
                   >
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${link.color}`}>
                       <link.icon className="w-5 h-5" />
@@ -259,7 +268,7 @@ export default function StudentDashboard() {
             </section>
 
             {/* Upcoming Assignments */}
-            <section className="glass-card rounded-2xl overflow-hidden">
+            <section className="bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
               <div className="flex items-center justify-between px-5 pt-4 pb-2">
                 <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                   <DocumentTextIcon className="w-4 h-4 text-orange-600" />
@@ -293,14 +302,14 @@ export default function StudentDashboard() {
                   </div>
                 ) : (
                   <p className="text-sm text-gray-400 text-center py-4">
-                    No upcoming assignments ðŸ“
+                    No upcoming assignments
                   </p>
                 )}
               </div>
             </section>
 
             {/* Recent Notifications */}
-            <section className="glass-card rounded-2xl overflow-hidden">
+            <section className="bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
               <div className="flex items-center justify-between px-5 pt-4 pb-2">
                 <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                   <BellAlertIcon className="w-4 h-4 text-purple-600" />
@@ -332,7 +341,7 @@ export default function StudentDashboard() {
                   </div>
                 ) : (
                   <p className="text-sm text-gray-400 text-center py-4">
-                    No notifications yet ðŸ””
+                    No notifications yet
                   </p>
                 )}
               </div>

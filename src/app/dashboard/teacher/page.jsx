@@ -85,7 +85,7 @@ export default function TeacherDashboard() {
   ];
 
   return (
-    <div className="min-h-screen aurora-bg">
+    <div className="min-h-screen bg-[#F4F8FE]">
       {/* Header */}
       <header className="glass-nav sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -116,7 +116,7 @@ export default function TeacherDashboard() {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-56 glass-card rounded-2xl py-2 z-50">
+              <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 shadow-sm rounded-2xl py-2 z-50">
                 <div className="px-4 py-2 border-b border-white/40">
                   <p className="text-sm font-medium text-gray-900">{teacherName}</p>
                   <p className="text-xs text-gray-500">{user.email || user.designation || 'Teacher'}</p>
@@ -140,7 +140,7 @@ export default function TeacherDashboard() {
 
       <main className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* Welcome + attendance summary */}
-        <section className="glass-card rounded-3xl p-6 sm:p-8">
+        <section className="bg-white border border-gray-100 shadow-sm rounded-3xl p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div>
               <p className="text-sm text-gray-500">Welcome back 👋</p>
@@ -172,7 +172,7 @@ export default function TeacherDashboard() {
               <Link
                 key={mod.name}
                 href={mod.href}
-                className="group glass-card rounded-2xl p-5 flex items-center gap-4 hover:-translate-y-1 hover:shadow-xl transition-all duration-200"
+                className="group bg-white border border-gray-100 shadow-sm rounded-2xl p-5 flex items-center gap-4 hover:-translate-y-1 hover:shadow-xl transition-all duration-200"
               >
                 <div className={`p-3 rounded-2xl bg-gradient-to-br ${mod.color} text-white shadow-lg`}>
                   <mod.icon className="h-6 w-6" />

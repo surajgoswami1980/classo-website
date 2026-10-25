@@ -23,6 +23,12 @@
   --color-accent-500: #a855f7;
   --color-accent-600: #9333ea;
   --color-accent-700: #7e22ce;
+
+  /* Deep navy used by the sidebar mockups and dark CTA section. */
+  --color-navy-700: #0B3670;
+  --color-navy-800: #082B5B;
+  --color-navy-900: #061D40;
+  --color-navy-950: #04142E;
 }
 
 :root {

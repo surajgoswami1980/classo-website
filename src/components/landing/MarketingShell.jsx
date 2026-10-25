@@ -4,6 +4,8 @@ import Link from 'next/link';
 import LandingNav from './LandingNav';
 import QuiloLogo from '../QuiloLogo';
 import useReveal from './useReveal';
+import CookieNotice from '../legal/CookieNotice';
+import { legalPages } from '../../lib/legal';
 
 /**
  * Shared marketing-page shell: fixed MyClasses navbar + footer, with the
@@ -12,7 +14,7 @@ import useReveal from './useReveal';
 export default function MarketingShell({ children }) {
   useReveal();
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-white overflow-x-clip">
       <LandingNav />
       <main>{children}</main>
       <MarketingFooter />
@@ -32,7 +34,7 @@ export function MarketingFooter() {
           <p className="mt-4 text-sm leading-relaxed">Education Management Platform — manage today, build brighter tomorrows.</p>
         </div>
         <FooterCol title="Product" links={[['Features', '/features'], ['Pricing', '/pricing'], ['About', '/about'], ['Contact', '/contact']]} />
-        <FooterCol title="Company" links={[['About Us', '/about'], ['Contact', '/contact'], ['Request Demo', '/contact'], ['Sign in', '/login']]} />
+        <FooterCol title="Legal" links={[['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['Refund Policy', '/refund-policy'], ['Delete Account', '/data-deletion']]} />
         <div>
           <h4 className="text-sm font-bold text-white uppercase tracking-wider">Get in touch</h4>
           <p className="mt-4 text-sm">hello@myclasses.app</p>
@@ -40,10 +42,16 @@ export function MarketingFooter() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-5 text-sm text-center">
-          © {new Date().getFullYear()} MyClasses. All rights reserved.
+        <div className="max-w-7xl mx-auto flex flex-col items-center gap-3 px-5 py-5 text-sm sm:flex-row sm:justify-between sm:px-8">
+          <span>© {new Date().getFullYear()} MyClasses. All rights reserved.</span>
+          <nav aria-label="Legal" className="flex flex-wrap justify-center gap-x-5 gap-y-1.5">
+            {legalPages.map((p) => (
+              <Link key={p.slug} href={`/${p.slug}`} className="hover:text-white transition-colors">{p.short}</Link>
+            ))}
+          </nav>
         </div>
       </div>
+      <CookieNotice />
     </footer>
   );
 }

@@ -104,7 +104,10 @@ export default function EnquiryForm({ source = 'contact' }) {
           'Request a Free Demo'
         )}
       </button>
-      <p className="text-center text-xs text-gray-400">We'll never share your details. No spam, ever.</p>
+      <p className="text-center text-xs text-gray-400">
+        By submitting, you agree that we may contact you about your enquiry, as described in our{' '}
+        <a href="/privacy" className="underline hover:text-gray-600">Privacy Policy</a>. No spam, ever.
+      </p>
     </form>
   );
 }
