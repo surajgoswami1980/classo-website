@@ -1,7 +1,7 @@
 import './globals.css';
 import { Providers } from '../providers/Providers';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://myclasses.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://myclasses.in';
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),

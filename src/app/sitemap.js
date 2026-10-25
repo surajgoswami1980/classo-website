@@ -1,6 +1,6 @@
 import { legalPages } from '../lib/legal';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://myclasses.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://myclasses.in';
 
 export default function sitemap() {
   const now = new Date();
