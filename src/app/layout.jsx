@@ -42,7 +42,7 @@ export const metadata = {
     description:
       'Run your entire school on one platform. Pay per student from ₹10/month. Request a free demo.',
   },
-  icons: { icon: '/favicon.ico' },
+  icons: { icon: [{ url: '/myclasses-logo.svg', type: 'image/svg+xml' }], shortcut: '/myclasses-logo.svg', apple: '/myclassi.jpg' },
   category: 'education',
 };
 

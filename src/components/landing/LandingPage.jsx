@@ -121,8 +121,21 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Product visual — real hero image if present, else CSS mockup */}
-          <SlotOrMock src="/landing/hero.png" alt="MyClasses dashboard and mobile app">
+          {/* Hero visual — student photo if present, else CSS mockup */}
+          <SlotOrMock
+            src="/landingpagestudent.png"
+            alt="Students using MyClasses"
+            imgClass="rounded-3xl"
+            overlay={
+              <div className="absolute -bottom-4 left-4 hidden rounded-2xl bg-white/95 px-4 py-3 shadow-xl ring-1 ring-gray-100 backdrop-blur sm:flex sm:items-center sm:gap-2.5">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-50 text-primary-600"><Ico name="users" small /></span>
+                <div>
+                  <p className="text-sm font-extrabold leading-none text-[#0F2A52]">3,00,000+</p>
+                  <p className="text-[11px] text-gray-500">Students Trust Us</p>
+                </div>
+              </div>
+            }
+          >
             <div className="relative">
               <DashboardMock />
               <div className="absolute -bottom-6 -left-2 hidden w-52 sm:block">
@@ -265,6 +278,28 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ─── STAY CONNECTED (mobile apps) ──────────────────────── */}
+      <section className="py-20">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-2">
+          <div className="reveal">
+            <span className="text-sm font-bold uppercase tracking-wider text-primary-600">Mobile apps for students &amp; parents</span>
+            <h2 className="mt-2 text-3xl font-extrabold text-[#0F2A52] sm:text-4xl">Stay Connected<br />Anywhere, Anytime</h2>
+            <p className="mt-4 text-gray-600">Easy access to attendance, classes, fees, homework, exam results and important updates — right from your phone, on Android and iOS.</p>
+            <ul className="mt-6 grid grid-cols-2 gap-3">
+              {['Attendance marked', 'New assignments', 'Fee payments', 'Exam results'].map((t) => (
+                <li key={t} className="flex items-center gap-2 text-sm text-gray-700">
+                  <svg className="h-4 w-4 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>{t}
+                </li>
+              ))}
+            </ul>
+            <Link href="/contact" className="mt-7 inline-block rounded-xl bg-primary-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-primary-600/30 transition hover:bg-primary-700">Book a Free Demo</Link>
+          </div>
+          <SlotOrMock src="/download.png" alt="MyClasses mobile app — download on Google Play and the App Store" imgClass="rounded-3xl" className="reveal reveal-delay-1">
+            <div className="mx-auto w-56"><PhoneMock /></div>
+          </SlotOrMock>
+        </div>
+      </section>
+
       {/* ─── TESTIMONIALS ──────────────────────────────────────── */}
       <section className="py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -355,12 +390,13 @@ export default function LandingPage() {
 /* Shows a real image from /public if the file exists, else the CSS mockup.
    Drop files in school-erp-web/public/landing/ (hero.png, preview.png) to use
    your own artwork — a missing file silently falls back and never breaks. */
-function SlotOrMock({ src, alt, className = '', children }) {
+function SlotOrMock({ src, alt, className = '', imgClass = 'rounded-2xl', overlay = null, children }) {
   const [failed, setFailed] = useState(false);
   if (failed) return <div className={className}>{children}</div>;
   return (
-    <div className={className}>
-      <img src={src} alt={alt} onError={() => setFailed(true)} className="h-auto w-full rounded-2xl" loading="lazy" />
+    <div className={`relative ${className}`}>
+      <img src={src} alt={alt} onError={() => setFailed(true)} className={`h-auto w-full ${imgClass}`} loading="lazy" />
+      {overlay}
     </div>
   );
 }
