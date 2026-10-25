@@ -37,7 +37,7 @@ export function MarketingFooter() {
         <FooterCol title="Legal" links={[['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['Refund Policy', '/refund-policy'], ['Delete Account', '/data-deletion']]} />
         <div>
           <h4 className="text-sm font-bold text-white uppercase tracking-wider">Get in touch</h4>
-          <p className="mt-4 text-sm">hello@myclasses.app</p>
+          <p className="mt-4 text-sm">info@myclasses.in or 8295150083</p>
           <Link href="/login" className="mt-4 inline-block px-5 py-2.5 text-sm font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors">Sign in to Portal</Link>
         </div>
       </div>

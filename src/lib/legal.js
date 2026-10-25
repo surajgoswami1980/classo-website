@@ -10,13 +10,13 @@ export const company = {
   brand: 'MyClasses',
   entity: env('NEXT_PUBLIC_LEGAL_ENTITY', 'MyClasses'),
   address: env('NEXT_PUBLIC_LEGAL_ADDRESS', ''),
-  email: env('NEXT_PUBLIC_CONTACT_EMAIL', 'hello@myclasses.app'),
-  privacyEmail: env('NEXT_PUBLIC_PRIVACY_EMAIL', env('NEXT_PUBLIC_CONTACT_EMAIL', 'hello@myclasses.app')),
+  email: env('NEXT_PUBLIC_CONTACT_EMAIL', 'info@myclasses.in'),
+  privacyEmail: env('NEXT_PUBLIC_PRIVACY_EMAIL', env('NEXT_PUBLIC_CONTACT_EMAIL', 'info@myclasses.in')),
   phone: env('NEXT_PUBLIC_CONTACT_PHONE', ''),
   grievanceName: env('NEXT_PUBLIC_GRIEVANCE_OFFICER', 'Grievance Officer'),
-  grievanceEmail: env('NEXT_PUBLIC_GRIEVANCE_EMAIL', env('NEXT_PUBLIC_PRIVACY_EMAIL', env('NEXT_PUBLIC_CONTACT_EMAIL', 'hello@myclasses.app'))),
+  grievanceEmail: env('NEXT_PUBLIC_GRIEVANCE_EMAIL', env('NEXT_PUBLIC_PRIVACY_EMAIL', env('NEXT_PUBLIC_CONTACT_EMAIL', 'info@myclasses.in'))),
   jurisdiction: env('NEXT_PUBLIC_LEGAL_JURISDICTION', 'India'),
-  website: env('NEXT_PUBLIC_SITE_URL', 'https://myclasses.app'),
+  website: env('NEXT_PUBLIC_SITE_URL', 'https://myclasses.in'),
 };
 
 export const LAST_UPDATED = '21 October 2026';
