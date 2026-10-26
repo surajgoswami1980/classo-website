@@ -49,15 +49,39 @@ export default function AssignmentsPage() {
   const [submitFor, setSubmitFor] = useState(null);
   const [submitText, setSubmitText] = useState('');
   const [submitUrl, setSubmitUrl] = useState('');
+  const [submitFileName, setSubmitFileName] = useState('');
+  const [uploading, setUploading] = useState(false);
   // Teacher grade modal state
   const [gradeFor, setGradeFor] = useState(null);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await api.post('/upload?folder=submissions', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const data = res.data?.data;
+      setSubmitUrl(data.url);
+      setSubmitFileName(data.name || file.name);
+      toast.success('File attached');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Upload failed');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
 
   const submitMutation = useMutation({
     mutationFn: async ({ id, body }) => (await api.post(`/assignment/${id}/submit`, body)).data,
     onSuccess: () => {
       toast.success('Submitted!');
       queryClient.invalidateQueries({ queryKey: ['assignments'] });
-      setSubmitFor(null); setSubmitText(''); setSubmitUrl('');
+      setSubmitFor(null); setSubmitText(''); setSubmitUrl(''); setSubmitFileName('');
     },
     onError: (err) => toast.error(err.response?.data?.message || 'Failed to submit'),
   });
@@ -317,7 +341,7 @@ export default function AssignmentsPage() {
                             <span className="text-xs font-semibold text-blue-600">Submitted{sub?.is_late ? ' (late)' : ''} — awaiting marks</span>
                           ) : !isPastDue ? (
                             <button
-                              onClick={() => { setSubmitFor(a); setSubmitText(sub?.description || ''); setSubmitUrl(sub?.attachment_url || ''); }}
+                              onClick={() => { setSubmitFor(a); setSubmitText(sub?.description || ''); setSubmitUrl(sub?.attachment_url || ''); setSubmitFileName(''); }}
                               className="px-4 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition"
                             >
                               Submit
@@ -376,8 +400,19 @@ export default function AssignmentsPage() {
             <p className="text-xs text-gray-400 mb-4">Type your answer and optionally paste an image/PDF link.</p>
             <label className="block text-xs font-medium text-gray-600 mb-1">Your answer / notes</label>
             <textarea value={submitText} onChange={(e) => setSubmitText(e.target.value)} rows={4} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none mb-3" />
-            <label className="block text-xs font-medium text-gray-600 mb-1">File link (image / PDF URL — optional)</label>
-            <input type="text" value={submitUrl} onChange={(e) => setSubmitUrl(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none mb-4" placeholder="https://…" />
+            <label className="block text-xs font-medium text-gray-600 mb-1">Attach a file (PDF / image)</label>
+            <label className={`flex items-center justify-center gap-2 w-full px-3 py-2.5 border border-dashed border-blue-400 rounded-lg text-sm text-blue-600 cursor-pointer hover:bg-blue-50 mb-2 ${uploading ? 'opacity-60 pointer-events-none' : ''}`}>
+              <input type="file" accept=".pdf,image/*,.doc,.docx" className="hidden" onChange={handleFileUpload} disabled={uploading} />
+              {uploading ? 'Uploading…' : (submitFileName ? 'Replace attached file' : 'Choose a file from your device')}
+            </label>
+            {submitFileName && (
+              <div className="flex items-center gap-2 bg-emerald-50 rounded-lg px-3 py-2 mb-3">
+                <span className="flex-1 truncate text-xs text-gray-700">{submitFileName}</span>
+                <button type="button" onClick={() => { setSubmitUrl(''); setSubmitFileName(''); }} className="text-gray-400 hover:text-gray-600"><XMarkIcon className="w-4 h-4" /></button>
+              </div>
+            )}
+            <label className="block text-xs font-medium text-gray-600 mb-1">Or paste a file link (optional)</label>
+            <input type="text" value={submitUrl} onChange={(e) => { setSubmitUrl(e.target.value); setSubmitFileName(''); }} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none mb-4" placeholder="https://…" />
             <div className="flex justify-end gap-2">
               <button onClick={() => setSubmitFor(null)} className="px-4 py-2 border border-gray-200 rounded-lg text-sm">Cancel</button>
               <button onClick={doSubmit} disabled={submitMutation.isPending} className="px-5 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold disabled:opacity-60">{submitMutation.isPending ? 'Submitting…' : 'Submit'}</button>

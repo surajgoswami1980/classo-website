@@ -27,6 +27,10 @@ export default function LoginPage() {
   const [otpMeta, setOtpMeta] = useState(null); // { masked, cooldown }
   const [otp, setOtp] = useState('');
 
+  // Account picker (shared phone/email matches several accounts — e.g. siblings)
+  const [accounts, setAccounts] = useState(null); // [{ user_id, name, masked_phone }]
+  const [selectionToken, setSelectionToken] = useState('');
+
   const [formData, setFormData] = useState({
     school_code: '',
     identifier: '',
@@ -37,6 +41,32 @@ export default function LoginPage() {
     if (user.role === 'student' || user.role === 'parent') router.push('/dashboard/student');
     else if (user.role === 'teacher' || user.role === 'incharge') router.push('/dashboard/teacher');
     else router.push('/dashboard');
+  };
+
+  // Process a login/OTP response: either a session, or a multi-account choice.
+  const finishAuth = (data) => {
+    if (data?.multiple) {
+      setAccounts(data.accounts || []);
+      setSelectionToken(data.selection_token);
+      setStep(4);
+      return;
+    }
+    const { access_token, refresh_token, user, school } = data;
+    dispatch(setCredentials({ user, school, access_token, refresh_token }));
+    toast.success(`Welcome, ${user.name}!`);
+    routeByRole(user);
+  };
+
+  const handleSelectAccount = async (userId) => {
+    setLoading(true);
+    try {
+      const res = await api.post('/auth/select-account', { selection_token: selectionToken, user_id: userId });
+      finishAuth(res.data.data);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Could not sign in to that account');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSchoolLookup = async (e) => {
@@ -82,10 +112,7 @@ export default function LoginPage() {
         identifier: formData.identifier.trim(),
         password: formData.password,
       });
-      const { access_token, refresh_token, user, school } = res.data.data;
-      dispatch(setCredentials({ user, school, access_token, refresh_token }));
-      toast.success(`Welcome, ${user.name}!`);
-      routeByRole(user);
+      finishAuth(res.data.data);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Login failed');
     } finally {
@@ -132,10 +159,7 @@ export default function LoginPage() {
         identifier: formData.identifier.trim(),
         otp: otp.trim(),
       });
-      const { access_token, refresh_token, user, school } = res.data.data;
-      dispatch(setCredentials({ user, school, access_token, refresh_token }));
-      toast.success(`Welcome, ${user.name}!`);
-      routeByRole(user);
+      finishAuth(res.data.data);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Invalid OTP');
     } finally {
@@ -145,6 +169,7 @@ export default function LoginPage() {
 
   const resetToSchool = () => {
     setStep(1); setSchoolInfo(null); setMode('password'); setOtp(''); setOtpMeta(null);
+    setAccounts(null); setSelectionToken('');
   };
 
   return (
@@ -388,6 +413,38 @@ export default function LoginPage() {
                   Resend OTP
                 </button>
               </div>
+            </>
+          )}
+
+          {/* ─── STEP 4: Pick account (shared number → siblings) ──── */}
+          {step === 4 && (
+            <>
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-bold text-gray-900">Choose an account</h2>
+                <p className="text-sm text-gray-500 mt-1">This number is linked to more than one account. Pick who you want to sign in as.</p>
+              </div>
+              <div className="space-y-2">
+                {(accounts || []).map((a) => (
+                  <button
+                    key={a.user_id}
+                    onClick={() => handleSelectAccount(a.user_id)}
+                    disabled={loading}
+                    className="w-full flex items-center gap-3 p-3 border border-gray-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition disabled:opacity-60 text-left"
+                  >
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-bold">
+                      {a.name?.charAt(0)?.toUpperCase() || '?'}
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm font-semibold text-gray-900 truncate">{a.name}</span>
+                      {a.masked_phone ? <span className="block text-xs text-gray-400">{a.masked_phone}</span> : null}
+                    </span>
+                    <span className="text-gray-300">→</span>
+                  </button>
+                ))}
+              </div>
+              <button onClick={resetToSchool} className="mt-4 text-sm text-gray-500 hover:text-blue-600 transition">
+                ← Start over
+              </button>
             </>
           )}
         </div>
