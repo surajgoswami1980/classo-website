@@ -85,13 +85,13 @@ export default function TeacherDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F4F8FE]">
+    <div className="portal-shell min-h-screen">
       {/* Header */}
       <header className="glass-nav sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {school?.logo_url ? (
-              <img src={school.logo_url} alt="" className="h-10 w-10 object-contain rounded-xl" />
+              <img src={school.logo_url} alt={`${school?.name || 'School'} logo`} className="h-10 w-10 object-contain rounded-xl" />
             ) : (
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg">
                 {school?.name?.[0]}
@@ -106,7 +106,9 @@ export default function TeacherDashboard() {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/60 transition-colors"
+              aria-label="Open account menu"
+              aria-expanded={dropdownOpen}
+              className="flex items-center gap-2 rounded-xl p-1.5 transition-colors hover:bg-blue-50"
             >
               <span className="text-sm text-gray-600 hidden sm:block">{teacherName}</span>
               <div className="h-9 w-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-sm font-medium text-white shadow">
@@ -116,7 +118,7 @@ export default function TeacherDashboard() {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 shadow-sm rounded-2xl py-2 z-50">
+              <div className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-elevated animate-portal-enter">
                 <div className="px-4 py-2 border-b border-white/40">
                   <p className="text-sm font-medium text-gray-900">{teacherName}</p>
                   <p className="text-xs text-gray-500">{user.email || user.designation || 'Teacher'}</p>
@@ -138,41 +140,50 @@ export default function TeacherDashboard() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+      <main className="portal-container space-y-8 py-6 sm:py-9">
         {/* Welcome + attendance summary */}
-        <section className="bg-white border border-gray-100 shadow-sm rounded-3xl p-6 sm:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <section className="portal-hero animate-portal-enter p-6 sm:p-8">
+          <div className="relative z-10 flex flex-col gap-7 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm text-gray-500">Welcome back 👋</p>
-              <h2 className="text-2xl font-bold text-gray-900">{teacherName}</h2>
-              <p className="text-sm text-gray-500 mt-1">{user.designation || 'Teacher'}{user.department ? ` · ${user.department}` : ''}</p>
+              <p className="flex items-center gap-2 text-sm font-medium text-blue-100">
+                <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_0_4px_rgba(103,232,249,0.14)]" aria-hidden="true" />
+                Teacher workspace
+              </p>
+              <h2 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">Good to see you, {teacherName}</h2>
+              <p className="mt-2 text-sm text-blue-100">{user.designation || 'Teacher'}{user.department ? ` · ${user.department}` : ''}</p>
             </div>
-            <div className="grid grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-4 gap-2 sm:gap-3">
               {stats.map((s) => (
-                <div key={s.label} className="glass rounded-2xl px-4 py-3 text-center min-w-[72px]">
-                  <p className={`text-xl font-extrabold ${s.accent}`}>{s.value}</p>
-                  <p className="text-[11px] text-gray-500 mt-0.5">{s.label}</p>
+                <div key={s.label} className="teacher-stat">
+                  <p className="text-xl font-black text-white">{s.value}</p>
+                  <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-100">{s.label}</p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="mt-5">
-            <div className="h-2.5 w-full rounded-full bg-white/50 overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500" style={{ width: `${pct}%` }} />
+          <div className="relative z-10 mt-6">
+            <div className="h-2 overflow-hidden rounded-full bg-white/15">
+              <div className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-white transition-[width] duration-500" style={{ width: `${pct}%` }} />
             </div>
-            <p className="text-xs text-gray-500 mt-2">Your attendance this month</p>
+            <p className="mt-2 text-xs text-blue-100">Your attendance this month</p>
           </div>
         </section>
 
         {/* Quick actions */}
         <section>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">Workspace</p>
+              <h3 className="mt-1 text-xl font-bold tracking-tight text-slate-900">Quick actions</h3>
+            </div>
+            <p className="hidden text-sm text-slate-500 sm:block">Manage your day from one place</p>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {teacherModules.map((mod) => (
               <Link
                 key={mod.name}
                 href={mod.href}
-                className="group bg-white border border-gray-100 shadow-sm rounded-2xl p-5 flex items-center gap-4 hover:-translate-y-1 hover:shadow-xl transition-all duration-200"
+                className="surface-card surface-card-interactive group flex items-center gap-4 p-5"
               >
                 <div className={`p-3 rounded-2xl bg-gradient-to-br ${mod.color} text-white shadow-lg`}>
                   <mod.icon className="h-6 w-6" />

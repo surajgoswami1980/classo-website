@@ -91,43 +91,41 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F8FE] pb-20 md:pb-6">
+    <div className="portal-shell pb-20 md:pb-8">
       <StudentHeader unreadCount={unreadCount} />
 
-      <main className="max-w-5xl mx-auto px-4 py-4 space-y-5">
+      <main className="portal-container space-y-6 py-5 sm:py-7">
         {/* Welcome Card */}
-        <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-[#082B5B] rounded-2xl p-5 text-white shadow-lg shadow-blue-200/60">
-          <div className="flex items-center justify-between">
+        <section className="portal-hero animate-portal-enter">
+          <div className="relative z-10 flex items-center justify-between gap-5">
             <div>
-              <p className="text-blue-100 text-sm">Welcome back 👋</p>
-              <h2 className="text-xl font-bold mt-1">{studentName}</h2>
-              <div className="flex items-center gap-3 mt-2">
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                  Class {className}
-                </span>
-                {section && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                    Sec {section}
-                  </span>
-                )}
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20 text-white">
-                  Roll #{rollNumber}
-                </span>
+              <p className="flex items-center gap-2 text-sm font-medium text-blue-100">
+                <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_0_4px_rgba(103,232,249,0.14)]" aria-hidden="true" />
+                Welcome back
+              </p>
+              <h2 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">{studentName}</h2>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <span className="portal-hero__pill">Class {className}</span>
+                {section && <span className="portal-hero__pill">Section {section}</span>}
+                <span className="portal-hero__pill">Roll #{rollNumber}</span>
               </div>
             </div>
-            <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center">
-              <span className="text-2xl font-bold">{studentName.charAt(0).toUpperCase()}</span>
+            <div className="portal-avatar" aria-hidden="true">
+              <span>{studentName.charAt(0).toUpperCase()}</span>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Promo strip */}
-        <div className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-4 text-white shadow-lg shadow-blue-200/60">
-          <div className="flex-1">
-            <p className="text-[15px] font-bold">Keep Learning, Keep Growing</p>
-            <p className="text-sm text-white/80">Check your timetable and new assignments.</p>
+        <div className="learning-strip animate-portal-enter [animation-delay:60ms]">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/20">
+            <AcademicCapIcon className="h-6 w-6 text-white" aria-hidden="true" />
           </div>
-          <AcademicCapIcon className="h-9 w-9 text-white/90" />
+          <div className="min-w-0 flex-1">
+            <p className="font-bold text-white">Keep learning, keep growing</p>
+            <p className="mt-0.5 text-sm text-blue-100">Your timetable and latest assignments are ready.</p>
+          </div>
+          <ChevronRightIcon className="hidden h-5 w-5 text-white/70 sm:block" aria-hidden="true" />
         </div>
 
         {/* Loading State */}

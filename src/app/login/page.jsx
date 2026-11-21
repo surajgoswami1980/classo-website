@@ -173,11 +173,46 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4">
-      <div className="w-full max-w-md">
+    <main className="login-page">
+      <section className="login-story" aria-label="MyClasses portal overview">
+        <div className="login-story__glow" aria-hidden="true" />
+        <div className="relative z-10 max-w-xl">
+          <div className="mb-12 flex items-center gap-3">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-lg shadow-blue-950/20">
+              <QuiloLogo size={38} />
+            </span>
+            <div>
+              <p className="text-xl font-black tracking-tight text-white">MyClasses</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-blue-200">School ERP</p>
+            </div>
+          </div>
+          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-blue-100 backdrop-blur-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-300" aria-hidden="true" />
+            Your school day, thoughtfully organized
+          </p>
+          <h1 className="max-w-lg text-4xl font-black leading-[1.08] tracking-[-0.04em] text-white lg:text-5xl">
+            Everything your school needs, in one calm workspace.
+          </h1>
+          <p className="mt-5 max-w-lg text-base leading-7 text-blue-100/90">
+            Access classes, attendance, assignments, fees, results, and school updates securely from anywhere.
+          </p>
+          <div className="mt-10 grid max-w-lg grid-cols-3 gap-3" aria-label="Portal benefits">
+            {['Secure access', 'Live updates', 'One connected portal'].map((item, index) => (
+              <div key={item} className="login-benefit">
+                <span className="text-lg font-black text-white">0{index + 1}</span>
+                <span className="mt-1 block text-xs leading-4 text-blue-100">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <p className="relative z-10 text-xs text-blue-200/80">Trusted access for students, parents, and educators.</p>
+      </section>
+
+      <section className="login-workspace">
+        <div className="w-full max-w-md animate-portal-enter">
         {/* School branding */}
         {schoolInfo && (
-          <div className="text-center mb-6">
+          <div className="mb-6 text-center animate-portal-enter">
             {schoolInfo.logo_url ? (
               <img src={schoolInfo.logo_url} alt={schoolInfo.name} className="h-16 mx-auto mb-2 object-contain" />
             ) : (
@@ -193,7 +228,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+        <div className="login-card">
           {/* ─── STEP 1: School code ─────────────────────────────── */}
           {step === 1 && (
             <>
@@ -295,7 +330,8 @@ export default function LoginPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        className="absolute right-2 top-2 inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-slate-100 hover:text-gray-700"
                       >
                         {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                       </button>
@@ -448,12 +484,13 @@ export default function LoginPage() {
             </>
           )}
         </div>
-        <p className="mt-6 text-center text-xs text-gray-400">
+        <p className="mt-6 text-center text-xs leading-5 text-slate-500">
           By signing in you agree to our{' '}
-          <Link href="/terms" className="underline hover:text-gray-600">Terms</Link> and{' '}
-          <Link href="/privacy" className="underline hover:text-gray-600">Privacy Policy</Link>.
+          <Link href="/terms" className="font-medium text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-blue-700">Terms</Link> and{' '}
+          <Link href="/privacy" className="font-medium text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-blue-700">Privacy Policy</Link>.
         </p>
-      </div>
-    </div>
+        </div>
+      </section>
+    </main>
   );
 }

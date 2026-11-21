@@ -23,9 +23,7 @@ import {
 export default function BottomNav() {
   const pathname = usePathname();
   const { user } = useSelector((s) => s.auth);
-  const isTeacher = ['teacher', 'incharge'].includes(user?.role);
-  // "Home" must resolve to the role's own dashboard, otherwise a teacher who
-  // taps Home lands on the student dashboard.
+  const isTeacher = ['teacher', 'incharge', 'staff'].includes(user?.role);
   const homeHref = isTeacher ? '/dashboard/teacher' : '/dashboard/student';
 
   const navItems = [
@@ -38,27 +36,24 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 glass-nav md:hidden">
-      <div className="flex items-center justify-around h-16 px-2">
+    <nav className="glass-nav fixed inset-x-0 bottom-0 z-50 border-t pb-[env(safe-area-inset-bottom)] md:hidden" aria-label="Primary portal navigation">
+      <div className="mx-auto grid h-[4.25rem] max-w-xl grid-cols-6 px-1.5">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
+          const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
           const Icon = isActive ? item.activeIcon : item.icon;
 
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-all duration-200 ${
-                isActive ? 'text-blue-600 scale-105' : 'text-gray-400 hover:text-gray-600'
+              aria-current={isActive ? 'page' : undefined}
+              className={`group relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-[10px] font-semibold transition-colors ${
+                isActive ? 'text-blue-700' : 'text-slate-500 hover:text-slate-800'
               }`}
             >
-              {isActive && (
-                <span className="absolute -top-0.5 w-10 h-8 rounded-2xl bg-blue-500/10" />
-              )}
-              <Icon className="w-6 h-6 relative" />
-              <span className={`text-xs mt-0.5 font-medium relative ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>
-                {item.label}
-              </span>
+              {isActive && <span className="absolute inset-x-2 top-1.5 h-9 rounded-xl bg-blue-50 ring-1 ring-blue-100" aria-hidden="true" />}
+              <Icon className={`relative h-[1.35rem] w-[1.35rem] ${isActive ? 'text-blue-600' : 'text-slate-500'}`} aria-hidden="true" />
+              <span className="relative max-w-full truncate">{item.label}</span>
             </Link>
           );
         })}
